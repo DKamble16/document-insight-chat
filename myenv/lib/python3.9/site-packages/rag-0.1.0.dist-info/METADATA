@@ -1,0 +1,92 @@
+Metadata-Version: 2.1
+Name: rag
+Version: 0.1.0
+Summary: 
+Home-page: https://github.com/mraleson/rag.git
+License: MIT
+Author: Mark Raleson
+Author-email: markraleson@outlook.com
+Requires-Python: >=3.8,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: Django (>=4.1.3,<4.2.0)
+Requires-Dist: celery (>=5.0.2,<5.1.0)
+Requires-Dist: channels (>=3.0.2,<3.1.0)
+Requires-Dist: channels-redis (>=3.2.0,<3.3.0)
+Requires-Dist: daphne (>=3.0.1,<3.1.0)
+Requires-Dist: django-extensions (>=3.0.9,<3.1.0)
+Requires-Dist: ipython (>=7.19.0,<7.20.0)
+Requires-Dist: pylint (>=2.7.2,<2.8.0)
+Requires-Dist: pytest (>=6,<7)
+Requires-Dist: pytest-django (>=4.1.0,<4.2.0)
+Requires-Dist: pytest-mock (>=3.3.1,<3.4.0)
+Requires-Dist: python-dateutil (>=2.8.1,<2.9.0)
+Requires-Dist: ragclip (>=0.0.4,<0.1.0)
+Requires-Dist: redis (>=3.5.3,<3.6.0)
+Requires-Dist: watchdog (>=0.10.3,<0.11.0)
+Project-URL: Repository, https://github.com/mraleson/rag.git
+Description-Content-Type: text/markdown
+
+# Rag
+*Make creating rest APIs in Django simple.*
+
+Rag is a simple batteries included tool to make building rest API's using Django fast and easy.
+
+## Usage
+
+#### Quick Start
+
+#### Command Line
+The command line interface has commands to start a dev server, run development shell, run tests, run Django management commands, create an empty example project, and run a Celery background task worker.
+
+#### Validation
+  To validate a field you must start with a root validator: `to`, `am`, `accepts`, or `optional`.  All root
+  validators check that a field is defined before proceeding with the exception of `optional` which will
+  immediately accept if the field is undefined on the json object.
+
+## Contributing
+
+#### Lauching Dev Stack
+Use docker compose to launch development stack.
+
+#### Dev Setup
+To install development requirements.
+`poetry install`
+
+#### Running Dev Tests
+To run tests:  
+`poetry run poe test`
+
+To run a specific test or test file:  
+`poetry run poe test -k test_rag.py`
+
+To run a specific test in a suite:  
+`poetry run poe test -k "test_validate.py and test_check"`
+
+To see all print statements of passing tests use the `-s` flag
+`poetry run poe test -s`
+
+To run tests with auto reload:  
+`poetry run poe test-watch`
+
+To run tests with auto reload and specific test:  
+`poetry run poe test-watch -k test_name`
+
+Note: Errors like this might have a root exception with more detail and may mean you are missing migrations:
+`psycopg2.errors.InvalidCursorName`
+
+#### Running Template Integration Tests
+From project root folder enter poetry shell `poetry shell`
+Enter template folder `cd ./rag/templates/large`
+Run tests `rag test`
+
+#### Running All Tests
+
+To run all unit and integration tests:
+```
+poetry run ./scripts/test_all.py
+```
+

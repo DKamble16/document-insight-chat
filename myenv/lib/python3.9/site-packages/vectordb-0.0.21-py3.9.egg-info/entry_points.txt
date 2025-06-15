@@ -1,0 +1,3 @@
+[console_scripts]
+vectordb = vectordb.__main__:vectordb
+

@@ -1,0 +1,23 @@
+Metadata-Version: 2.1
+Name: ragclip
+Version: 0.0.4
+Summary: 
+Home-page: https://github.com/mraleson/ragclip.git
+License: MIT
+Author: Mark Raleson
+Author-email: markraleson@outlook.com
+Requires-Python: >=3.7,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: poetry (>=1.1.4,<2.0.0)
+Project-URL: Repository, https://github.com/mraleson/ragclip.git
+Description-Content-Type: text/markdown
+
+# RagCLIP
+
+*Rag command line proxy.*
+
