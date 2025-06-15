@@ -6,6 +6,7 @@ from rag import RAG
 import tempfile
 import sqlite3
 import os
+from business_analyzer import BusinessAnalyzer
 
 st.set_page_config(page_title="RAG Gemini Dashboard", layout="wide")
 st.title("📊 RAG Dashboard with Gemini API")
@@ -85,6 +86,102 @@ if uploaded_file:
         vectordb = VectorDB(dim=len(embeddings[0]))
         vectordb.add(embeddings, chunks)
         st.session_state.vectordb = vectordb
+        # Business Insights Section
+        st.subheader("Business Insights")
+        import pandas as pd
+        try:
+            if uploaded_file.name.endswith('.csv'):
+                df = pd.read_csv(file_path)
+            elif uploaded_file.name.endswith('.xlsx') or uploaded_file.name.endswith('.xls'):
+                df = pd.read_excel(file_path)
+            else:
+                df = None
+            if df is not None:
+                analyzer = BusinessAnalyzer(df)
+                st.write("**Top Selling Products:**")
+                st.write(analyzer.top_selling_products())
+                analyzer.plot_top_products()
+                st.write("**Top Selling Categories:**")
+                st.write(analyzer.top_selling_categories())
+                st.write("**Sales Trends Over Time:**")
+                analyzer.plot_sales_trends()
+                st.write("**Regional Performance:**")
+                analyzer.plot_regional_performance()
+                st.write("**Customer Segment Analysis:**")
+                analyzer.plot_customer_segment()
+                st.write("**Summary Statistics:**")
+                st.write(analyzer.summary_statistics())
+                st.write("**Anomalies/Outliers in Revenue:**")
+                st.write(analyzer.anomalies())
+                # --- Download Insights as PDF Button ---
+                st.markdown("\n---\n")
+                from fpdf import FPDF
+                import tempfile
+                pdf = FPDF()
+                pdf.add_page()
+                pdf.set_font("Arial", size=12)
+                pdf.cell(0, 10, "Business Insights Report", ln=True, align="C")
+                pdf.ln(10)
+                # Add text sections
+                pdf.set_font("Arial", size=10)
+                pdf.cell(0, 8, "Top Selling Products:", ln=True)
+                top_products = str(analyzer.top_selling_products())
+                pdf.multi_cell(0, 8, top_products)
+                pdf.ln(2)
+                pdf.cell(0, 8, "Top Selling Categories:", ln=True)
+                top_categories = str(analyzer.top_selling_categories())
+                pdf.multi_cell(0, 8, top_categories)
+                pdf.ln(2)
+                pdf.cell(0, 8, "Summary Statistics:", ln=True)
+                summary_stats = str(analyzer.summary_statistics())
+                pdf.multi_cell(0, 8, summary_stats)
+                pdf.ln(2)
+                pdf.cell(0, 8, "Anomalies/Outliers in Revenue:", ln=True)
+                anomalies = str(analyzer.anomalies())
+                pdf.multi_cell(0, 8, anomalies)
+                pdf.ln(4)
+
+                # --- Add chart images to PDF ---
+                import matplotlib.pyplot as plt
+                img_files = []
+                plot_methods = [
+                    ("plot_top_products", "Top Products Chart"),
+                    ("plot_sales_trends", "Sales Trends Chart"),
+                    ("plot_regional_performance", "Regional Performance Chart"),
+                    ("plot_customer_segment", "Customer Segment Analysis Chart"),
+                    # Add more (method_name, label) tuples here as you add more chart methods
+                ]
+                try:
+                    for method_name, label in plot_methods:
+                        plot_func = getattr(analyzer, method_name, None)
+                        if callable(plot_func):
+                            img = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+                            plot_func(save_path=img.name)
+                            pdf.add_page()  # Optional: add a new page for each chart
+                            pdf.set_font("Arial", size=12)
+                            pdf.cell(0, 10, label, ln=True, align="C")
+                            pdf.ln(2)
+                            pdf.image(img.name, w=100)
+                            img_files.append(img.name)
+                            img.close()
+                finally:
+                    for img in img_files:
+                        if os.path.exists(img):
+                            os.remove(img)
+
+                # Save PDF to temp file
+                with tempfile.NamedTemporaryFile(delete=False, suffix="_insights.pdf") as tmp_pdf:
+                    pdf.output(tmp_pdf.name)
+                    tmp_pdf.flush()
+                    with open(tmp_pdf.name, "rb") as f:
+                        st.download_button(
+                            label="Download Insights as PDF",
+                            data=f,
+                            file_name="business_insights.pdf",
+                            mime="application/pdf"
+                        )
+        except Exception as e:
+            st.info(f"Business insights not available: {e}")
     st.success(f"Document processed and stored in vectorDB! Session: {st.session_state.session_id}")
     st.subheader("Summary")
     st.write(st.session_state.summary)

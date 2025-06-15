@@ -19,8 +19,8 @@ class RAG:
         # Only allow .xlsx files and limit file size for security
         if not hasattr(file, 'name') or not file.name.endswith('.xlsx'):
             raise ValueError("Only .xlsx files are allowed.")
-        if hasattr(file, 'size') and file.size > 5 * 1024 * 1024:  # 5MB limit
-            raise ValueError("File size exceeds 5MB limit.")
+        if hasattr(file, 'size') and file.size > 2 * 1024 * 1024:  # 2MB limit
+            raise ValueError("File size exceeds 2MB limit.")
         df = pd.read_excel(file)
         return df.to_string()
 
@@ -29,8 +29,8 @@ class RAG:
         allowed_exts = ['.xlsx', '.xls', '.csv', '.pdf', '.doc', '.docx']
         if not hasattr(file, 'name') or not any(file.name.lower().endswith(ext) for ext in allowed_exts):
             raise ValueError("Only PDF, DOC/DOCX, XLS/XLSX, and CSV files are allowed.")
-        if hasattr(file, 'size') and file.size > 10 * 1024 * 1024:  # 10MB limit
-            raise ValueError("File size exceeds 10MB limit.")
+        if hasattr(file, 'size') and file.size > 2 * 1024 * 1024:  # 2MB limit for all files
+            raise ValueError("File size exceeds 2MB limit.")
         ext = file.name.lower().split('.')[-1]
         if ext in ['xlsx', 'xls']:
             df = pd.read_excel(file)
